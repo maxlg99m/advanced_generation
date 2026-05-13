@@ -54,29 +54,34 @@
    - остановитесь, если handoff содержит блокирующий статус.
 2. Выполните `Analysis Agent`:
    - используйте handoff от `Ingestion Agent`;
-   - примените `.codex/rules/agent-system_rules/04-coverage.md`, `.codex/rules/agent-system_rules/05-traceability.md` и `.codex/rules/testrail_rules/05-platform.md`;
+   - примените `.codex/rules/agent-system_rules/04-coverage.md`, `.codex/rules/agent-system_rules/10-ui-inventory-coverage.md`, `.codex/rules/agent-system_rules/05-traceability.md` и `.codex/rules/testrail_rules/05-platform.md`;
+   - если дизайн предоставлен, выполните `UI affordance audit` и сформируйте `ui_inventory`;
    - получите handoff package;
    - остановитесь, если handoff содержит блокирующий статус.
 3. Выполните `Checklist Generation Agent`:
    - используйте handoff от `Analysis Agent`;
-   - примените `.codex/rules/agent-system_rules/04-coverage.md`, `.codex/rules/agent-system_rules/05-traceability.md` и `.codex/rules/testrail_rules/*.md`;
+   - примените `.codex/rules/agent-system_rules/04-coverage.md`, `.codex/rules/agent-system_rules/10-ui-inventory-coverage.md`, `.codex/rules/agent-system_rules/05-traceability.md` и `.codex/rules/testrail_rules/*.md`;
+   - если дизайн предоставлен, генерируйте проверки на основе `ui_inventory` и заполните `checklist_ids` или `not_covered_reason`;
    - получите handoff package;
    - остановитесь, если handoff содержит блокирующий статус.
 4. Выполните `Coverage Review Agent`:
    - используйте handoff от `Checklist Generation Agent`;
-   - примените `.codex/rules/agent-system_rules/04-coverage.md`, `.codex/rules/agent-system_rules/06-validation.md` и `.codex/rules/testrail_rules/*.md`;
+   - примените `.codex/rules/agent-system_rules/04-coverage.md`, `.codex/rules/agent-system_rules/10-ui-inventory-coverage.md`, `.codex/rules/agent-system_rules/06-validation.md` и `.codex/rules/testrail_rules/*.md`;
+   - если дизайн предоставлен, проверьте покрытие `ui_inventory` через `ui_coverage_matrix`;
    - получите handoff package;
    - если есть блокеры, сохраните замечания в `logs/` и не создавайте финальный CSV;
    - остановитесь, если handoff содержит блокирующий статус.
 5. Выполните `CSV Export Agent`:
    - используйте handoff от `Coverage Review Agent`;
-   - примените `.codex/rules/testrail_rules/01-csv-contract.md`, `.codex/rules/testrail_rules/02-sections.md`, `.codex/rules/testrail_rules/03-priority.md`, `.codex/rules/testrail_rules/04-scenario.md`, `.codex/rules/testrail_rules/05-platform.md`, `.codex/rules/testrail_rules/06-labels.md`, `.codex/rules/testrail_rules/07-title.md`, `.codex/rules/testrail_rules/08-expected-results.md` и `.codex/rules/agent-system_rules/06-validation.md`;
+   - примените `.codex/rules/testrail_rules/01-csv-contract.md`, `.codex/rules/testrail_rules/02-sections.md`, `.codex/rules/testrail_rules/03-priority.md`, `.codex/rules/testrail_rules/04-scenario.md`, `.codex/rules/testrail_rules/05-platform.md`, `.codex/rules/testrail_rules/06-labels.md`, `.codex/rules/testrail_rules/07-title.md`, `.codex/rules/testrail_rules/08-expected-results.md`, `.codex/rules/agent-system_rules/06-validation.md` и `.codex/rules/agent-system_rules/10-ui-inventory-coverage.md`;
+   - если дизайн предоставлен, выполните `pre_export_lint`;
+   - сформируйте `pre_export_blocker_summary` для `logs/Mistakes.md`;
    - сохраните итоговый CSV в `data/output/csv/final_checklists.csv`.
 6. Сохраните post-run логи:
    - примените `.codex/rules/agent-system_rules/08-logs.md`;
    - `logs/Questions.md` — открытые вопросы;
-   - `logs/Mistakes.md` — найденные проблемы и блокеры;
-   - `logs/Details_and_Improve.md` — детали покрытия и предложения улучшений.
+   - `logs/Mistakes.md` — найденные проблемы, блокеры и `pre_export_blocker_summary`;
+   - `logs/Details_and_Improve.md` — детали покрытия, `ui_coverage_matrix` при наличии дизайна и предложения улучшений.
 7. Сообщите пользователю краткий финальный отчет по `.codex/rules/agent-system_rules/07-final-report.md`.
 
 ## Completion Criteria

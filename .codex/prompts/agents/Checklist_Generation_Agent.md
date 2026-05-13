@@ -2,58 +2,49 @@
 
 ## Назначение
 
-Преобразовать testable statements в атомарные QA чек-листы.
+Преобразовать testable statements и `ui_inventory` в атомарные QA чек-листы.
 
 ## Вход
 
-- все артефакты `Analysis Agent`;
+- артефакты `Analysis Agent`;
+- `ui_inventory`, если дизайн предоставлен;
 - `coverage_seeds`;
 - rules layer:
   - `.codex/rules/agent-system_rules/03-pipeline-handoff.md`;
   - `.codex/rules/agent-system_rules/04-coverage.md`;
   - `.codex/rules/agent-system_rules/05-traceability.md`;
-  - `.codex/rules/testrail_rules/02-sections.md`;
-  - `.codex/rules/testrail_rules/03-priority.md`;
-  - `.codex/rules/testrail_rules/04-scenario.md`;
-  - `.codex/rules/testrail_rules/05-platform.md`;
-  - `.codex/rules/testrail_rules/06-labels.md`;
-  - `.codex/rules/testrail_rules/07-title.md`;
-  - `.codex/rules/testrail_rules/08-expected-results.md`;
+  - `.codex/rules/agent-system_rules/10-ui-inventory-coverage.md`, если дизайн предоставлен;
+  - `.codex/rules/testrail_rules/*.md`;
 - релевантные web/mobile skills.
 
 ## Обязанности
 
-1. Создать атомарные проверки.
-2. Покрыть positive, negative, edge-case, network/server, permission/security и stateful сценарии.
-3. Применить platform-specific правила.
-4. Назначить поля `Section`, `Title`, `Priority`, `Platform`, `Labels`, `Scenario`, `Expected Result`.
-5. Формировать `Section` по `.codex/rules/testrail_rules/02-sections.md`.
-6. Формировать `Title` по `.codex/rules/testrail_rules/07-title.md`.
-7. Назначать `Priority`, `Labels`, `Scenario` и `Platform` по `.codex/rules/testrail_rules/03-priority.md`, `04-scenario.md`, `05-platform.md`, `06-labels.md`.
-8. Для web-кроссбраузерных проверок создавать отдельный чек-лист на каждый браузер и указывать браузер в `Title`.
-9. Обеспечить трассируемость каждой проверки к требованиям или к дизайн-источнику в режиме `design only`.
-10. Не объединять несколько независимых проверок в одну строку.
+1. Создать атомарные чек-листы по testable statements.
+2. Если дизайн предоставлен, генерировать проверки из `ui_inventory`, а не по общему впечатлению от экрана.
+3. Для каждого item с `coverage_required=true` заполнить `checklist_ids` или конкретный `not_covered_reason`.
+4. Назначить поля `Section`, `Title`, `Priority`, `Platform`, `Labels`, `Scenario`, `Expected Result` по rules layer.
+5. Сформировать самодостаточный `Title` по `.codex/rules/testrail_rules/07-title.md`: объект + наблюдаемое состояние + место/условие.
+6. Перед handoff исправить `Title`, если он только называет UI-элемент, поле, колонку или строку без проверяемого состояния.
+7. Обеспечить трассируемость каждой проверки к ТЗ или дизайн-источнику.
+8. Не объединять независимые проверки в одну строку.
 
 ## Выход
 
 - `generated_checklists`;
 - `requirement_traceability_map`;
+- `ui_inventory` с заполненными `checklist_ids` и `not_covered_reason`;
 - `checklist_generation_report`.
 
 ## Handoff package
 
-Перед запуском следующего этапа сформировать package по контракту из `.codex/rules/agent-system_rules/03-pipeline-handoff.md`:
+Перед запуском следующего этапа сформировать package по `.codex/rules/agent-system_rules/03-pipeline-handoff.md`.
 
-- `pipeline_run_id`;
-- `source_agent`;
-- `target_agent`;
-- `status`;
-- `artifacts`;
-- `validation_result`;
-- `blocking_issues`;
-- `assumptions`;
-- `recommended_next_action`.
+## Quality gates
 
-## Условие handoff
+Запуск `Coverage Review Agent` запрещен, если:
 
-Запуск `Coverage Review Agent` разрешён только если все чек-листы атомарны, обязательные поля заполнены, трассируемость есть, platform-specific правила применены.
+- есть неатомарные чек-листы;
+- есть пустые обязательные поля;
+- `Title` не самодостаточен или только называет UI-элемент без наблюдаемого состояния;
+- отсутствует трассируемость;
+- дизайн предоставлен, но item с `coverage_required=true` не имеет `checklist_ids` и не имеет конкретного `not_covered_reason`.

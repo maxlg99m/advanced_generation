@@ -8,43 +8,24 @@
 
 - `approved_checklists`;
 - `export_readiness_report`;
+- `ui_coverage_matrix`, если дизайн предоставлен;
 - rules layer:
   - `.codex/rules/agent-system_rules/03-pipeline-handoff.md`;
   - `.codex/rules/agent-system_rules/06-validation.md`;
-  - `.codex/rules/testrail_rules/01-csv-contract.md`;
-  - `.codex/rules/testrail_rules/02-sections.md`;
-  - `.codex/rules/testrail_rules/03-priority.md`;
-  - `.codex/rules/testrail_rules/04-scenario.md`;
-  - `.codex/rules/testrail_rules/05-platform.md`;
-  - `.codex/rules/testrail_rules/06-labels.md`;
-  - `.codex/rules/testrail_rules/07-title.md`;
-  - `.codex/rules/testrail_rules/08-expected-results.md`.
+  - `.codex/rules/agent-system_rules/10-ui-inventory-coverage.md`, если дизайн предоставлен;
+  - `.codex/rules/testrail_rules/*.md`.
 
 ## Обязанности
 
-1. Проверить порядок колонок.
-2. Проверить заполненность всех значений.
-3. Проверить формат `Section`: `<Название экрана> > <Категория>`.
-4. Проверить допустимые значения и правила назначения `Priority`, `Platform`, `Labels`, `Scenario`.
-5. Проверить синтаксис `Title`, включая запрет глагольного начала и символа `,`.
-6. Проверить конкретность и трассируемость `Expected Result`, включая запрет размытых формулировок и выдуманных ошибок/HTTP-кодов.
-7. Заключить все значения в двойные кавычки.
-8. Экранировать внутренние кавычки как `""`.
-9. Сохранить файл в `data/output/csv/final_checklists.csv`.
+1. Проверить CSV/TestRail contract и обязательные поля.
+2. Выполнить `title_quality_lint` по `.codex/rules/agent-system_rules/06-validation.md`.
+3. Если дизайн предоставлен, выполнить `pre_export_lint`.
+4. Сформировать `pre_export_blocker_summary` для `logs/Mistakes.md`.
+5. Сохранить CSV в `data/output/csv/final_checklists.csv` только если все quality gates пройдены.
 
 ## Handoff package
 
-После экспорта сформировать финальный package по контракту из `.codex/rules/agent-system_rules/03-pipeline-handoff.md`:
-
-- `pipeline_run_id`;
-- `source_agent`;
-- `target_agent`;
-- `status`;
-- `artifacts`;
-- `validation_result`;
-- `blocking_issues`;
-- `assumptions`;
-- `recommended_next_action`.
+После экспорта сформировать финальный package по `.codex/rules/agent-system_rules/03-pipeline-handoff.md`.
 
 ## Строгий заголовок CSV
 
@@ -52,6 +33,13 @@
 "Section","Title","Priority","Platform","Labels","Scenario","Expected Result"
 ```
 
-## Блокировка
+## Quality gates
 
-Если хотя бы одно правило нарушено, CSV export запрещён до исправления.
+CSV export запрещен, если:
+
+- нарушен CSV/TestRail contract;
+- есть пустые обязательные поля;
+- `title_quality_lint` отсутствует или `title_quality_lint.status = failed`;
+- `pre_export_lint` отсутствует при наличии дизайна;
+- `pre_export_lint.status = failed`;
+- `pre_export_blocker_summary` не сформирован.

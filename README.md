@@ -27,31 +27,25 @@
 data/input/requirements/
 ```
 
-2. Положите дизайн в формате `.png`, `.jpg` или `.jpeg` в:
+2. Положите компактный файл дизайна в формате `.png`, `.jpg` или `.jpeg` в:
 
 ```text
 data/input/design/
 ```
 
-3. Откройте в IDE-чате файл:
-
-```text
-.codex/orchestrator/master-agent.md
-```
-
-4. Выполните проектную команду:
+3. Выполните проектную команду:
 
 ```text
 /init-qa-context
 ```
 
-5. После успешной инициализации выполните:
+4. После успешной инициализации выполните:
 
 ```text
 /generate-qa-checklists
 ```
 
-6. Итоговый CSV будет сохранён в:
+5. Итоговый CSV будет сохранён в:
 
 ```text
 data/output/csv/final_checklists.csv
@@ -93,7 +87,7 @@ data/output/csv/final_checklists.csv
   📄 README.md         # внутреннее описание агентской инфраструктуры
   📁 commands/         # тонкие command-wrapper файлы для проектных команд
   📁 orchestrator/
-    📄 master-agent.md # router/master prompt, выбирает command-wrapper и runnable prompt
+    📄 master-agent.md # основная точка входа для команд
   📁 prompts/
     📄 agent.*.md      # исполняемые prompt-файлы команд
     📁 system/         # системные промпты
